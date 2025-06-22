@@ -1,0 +1,16 @@
+services:
+  optimedica-backend:
+    build:
+      context: .
+    image: optimedica-backend
+    container_name: optimedica
+    ports:
+      - "${SPRING_PORT}:8080"
+    env_file:
+      - .env
+    networks:
+      - spring
+
+networks:
+  spring:
+    external: true
