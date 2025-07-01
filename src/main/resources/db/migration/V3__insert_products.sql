@@ -1,7 +1,7 @@
 -- 10 nuevos productos de práctica (con duplicados intencionales)
 INSERT INTO products
 (name, description, price, stock, brand, imageUrl,
- activeFlag, category_id, created_at)
+ active_flag, category_id, created_at)
 VALUES
 -- Variantes de “Aviador Classic” (Lentes de Sol, categoría 1)
 ('Aviador Classic', 'Versión con montura plata.',        155.90, 18, 'RayVision',
