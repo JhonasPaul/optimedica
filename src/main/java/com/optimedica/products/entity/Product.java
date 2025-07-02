@@ -1,6 +1,7 @@
 package com.optimedica.products.entity;
 
 import com.optimedica.common.entity.BaseId;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -21,9 +22,13 @@ public class Product extends BaseId {
     private BigDecimal price;
     private long stock;
     private String brand;
+    @Column(name = "image_url")
     private String imageURL;
+    @Column(name = "active_flag")
     private long activeFlag;
+    @Column(name = "category_id")
     private Integer categoryID;
+    @Column(name = "created_at")
     private Date createdAt;
 
     public String getName() {
