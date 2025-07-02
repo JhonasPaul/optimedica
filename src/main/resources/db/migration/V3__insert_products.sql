@@ -1,6 +1,6 @@
 -- 10 nuevos productos de práctica (con duplicados intencionales)
 INSERT INTO products
-(name, description, price, stock, brand, imageUrl,
+(name, description, price, stock, brand, image_url,
  active_flag, category_id, created_at)
 VALUES
 -- Variantes de “Aviador Classic” (Lentes de Sol, categoría 1)

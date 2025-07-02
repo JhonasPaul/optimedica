@@ -1,5 +1,5 @@
 -- CATEGORÍAS DE EJEMPLO
-INSERT INTO categories (name, description, imageUrl, active_flag, created_at)
+INSERT INTO categories (name, description, image_url, active_flag, created_at)
 VALUES ('Lentes de Sol', 'Colección de gafas de sol con protección UV400.',
         'https://cdn.example.com/img/categories/sunglasses.jpg', TRUE, NOW()),
        ('Lentes de Lectura', 'Monturas ligeras y ergonómicas para lectura diaria.',
