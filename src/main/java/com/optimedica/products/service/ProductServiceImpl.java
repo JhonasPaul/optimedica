@@ -32,12 +32,6 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> listProduct() {
         var list = productRepository.findAll();
         return productMapper.toListDto(list);
-
-//        return productRepository
-//                .findAll()z
-//                .stream()
-//                .map(p -> productMapper.toDto(p))
-//                .toList();
     }
 
     @Override
@@ -74,6 +68,13 @@ public class ProductServiceImpl implements ProductService {
 
         var proSave = productRepository.save(existing);
         return productMapper.toDto(proSave);
+    }
 
+//    @Override
+    public void deleteProduct(Integer id) {
+        var existing = productRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+
+        productRepository.deleteById(existing.getId());
     }
 }

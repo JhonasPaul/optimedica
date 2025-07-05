@@ -115,7 +115,6 @@ public class ProductRepositoryTest extends BaseId {
     void testActualizarProducto() {
         // 🔧 Arrange: obtener un producto de los que ya fueron creados en @BeforeEach
        var findIdFirstProduct = productRepository.findAll().getFirst().getId();
-
         Optional<Product> optionalProduct = productRepository.findById(findIdFirstProduct);
         assertThat(optionalProduct).isPresent();
 
@@ -127,7 +126,6 @@ public class ProductRepositoryTest extends BaseId {
         productRepository.save(product);
 
 
-        // 🚀 Act: modificar y guardar
 
 
         // ✅ Assert: verificar que se actualizó correctamente
@@ -136,7 +134,21 @@ public class ProductRepositoryTest extends BaseId {
         assertThat(actualizado.get().getName()).isEqualTo("Producto actualizado");
         assertThat(actualizado.get().getPrice()).isEqualByComparingTo("200.00");
 
-
     }
 
+    @Test
+    @DisplayName("Deberia eliminar un producto")
+    void testEliminaProduct() {
+//        Arrange: obtener un producto
+        var findIdFirstProduct = productRepository.findAll().getFirst().getId();
+
+        Optional<Product> optionalProduct = productRepository.findById(findIdFirstProduct);
+        assertThat(optionalProduct).isPresent(); // Asegurarse que exista antes de eliminar
+
+        productRepository.deleteById(findIdFirstProduct);
+
+
+        Optional<Product> deleteAfterProduct = productRepository.findById(findIdFirstProduct);
+        assertThat(deleteAfterProduct).isNotPresent();
+    }
 }
