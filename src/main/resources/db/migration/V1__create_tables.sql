@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `products` (
     `brand`        VARCHAR(100) NULL,
     `image_url`    VARCHAR(255) NULL,
     `active_flag`  BOOLEAN      NULL,
-    `category_id`  INT          NOT NULL,
+    `category_id`  INT          NULL,
     `created_at`   DATETIME     NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_category`
