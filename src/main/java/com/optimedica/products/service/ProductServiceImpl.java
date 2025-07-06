@@ -43,10 +43,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<ProductDto> findById(Integer id) {
-        var existing = productRepository.findById(id)
+        // Buscamos el producto o lanzamos excepción si no existe
+        var producto = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("El Producto con el id : " + id + " no fue encontrado"));
-        return productRepository.findById(existing.getId())
-                .map(p -> productMapper.toDto(p));
+
+        // Convertimos a DTO y lo devolvemos envuelto en Optional
+        return Optional.of(productMapper.toDto(producto));
     }
 
     @Override
