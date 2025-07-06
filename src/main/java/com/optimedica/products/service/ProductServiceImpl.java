@@ -1,5 +1,6 @@
 package com.optimedica.products.service;
 
+import com.optimedica.common.exception.ResourceNotFoundException;
 import com.optimedica.products.dto.ProductDto;
 import com.optimedica.products.entity.Product;
 import com.optimedica.products.mapper.ProductMapper;
@@ -42,21 +43,25 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<ProductDto> findById(Integer id) {
-        return productRepository.findById(id)
-                .map(p -> productMapper.toDto(p));
+        // Buscamos el producto o lanzamos excepción si no existe
+        var producto = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("El Producto con el id : " + id + " no fue encontrado"));
+
+        // Convertimos a DTO y lo devolvemos envuelto en Optional
+        return Optional.of(productMapper.toDto(producto));
     }
 
     @Override
     public ProductDto saveProduct(ProductDto productDto) {
         var product = productMapper.toProduct(productDto);
-        var proSave =  productRepository.save(product);
+        var proSave = productRepository.save(product);
         return productMapper.toDto(proSave);
     }
 
     @Override
     public ProductDto updateProduct(Integer id, ProductDto productDto) {
         var existing = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("El Producto con el id : " + id + " no fue encontrado"));
 
         existing.setName(productDto.getName());
         existing.setDescription(productDto.getName());
@@ -70,10 +75,10 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toDto(proSave);
     }
 
-//    @Override
+    //    @Override
     public void deleteProduct(Integer id) {
         var existing = productRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("El Producto con el id : " + id + " no fue encontrado"));
 
         productRepository.deleteById(existing.getId());
     }
