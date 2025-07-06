@@ -44,13 +44,8 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> listarPorId(@PathVariable Integer id) {
-        Map<String, String> map = new HashMap<>();
-        Optional<ProductDto> productDtoOptional = productService.findById(id);
-        if (productDtoOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
-        }
-        map.put("mensaje ", "el id " + id + " no existe en la base de datos");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+        var optionalProductById = productService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(optionalProductById);
     }
 
     @PostMapping("guardar")
