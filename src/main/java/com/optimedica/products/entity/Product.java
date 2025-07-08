@@ -1,9 +1,7 @@
 package com.optimedica.products.entity;
 
 import com.optimedica.common.entity.BaseId;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import lombok.*;
 
@@ -26,6 +24,7 @@ public class Product extends BaseId {
     private String imageURL;
     @Column(name = "active_flag")
     private long activeFlag;
+    @Temporal(TemporalType.DATE)
     @Column(name = "created_at")
     private Date createdAt;
 
