@@ -63,16 +63,11 @@ public class ProductServiceImpl implements ProductService {
         var existing = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("El Producto con el id : " + id + " no fue encontrado"));
 
-        existing.setName(productDto.getName());
-        existing.setDescription(productDto.getName());
-        existing.setPrice(productDto.getPrice());
-        existing.setStock(productDto.getStock());
-        existing.setBrand(productDto.getBrand());
-        existing.setImageURL(productDto.getImageURL());
-        existing.setActiveFlag(productDto.getActiveFlag());
+/*copia todo los valores actuales del dto que viene del cliente hacia la entidad Product*/
+        productMapper.updateProductFromDto(productDto, existing); // evita los campos que no se actualizaran
+        var updated = productRepository.save(existing);
+        return productMapper.toDto(updated);
 
-        var proSave = productRepository.save(existing);
-        return productMapper.toDto(proSave);
     }
 
     //    @Override
