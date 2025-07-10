@@ -3,7 +3,7 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-!/docs/guia-pasos.md
+docs/guia-pasos.md
 
 ### STS ###
 .apt_generated
