@@ -92,7 +92,7 @@ Este documento registra en orden lo que se ha implementado en el backend de Opti
 * Usar `@Valid` en el controlador:
 
   ```java
-  public ResponseEntity<?> saveProduct(@RequestBody @Valid ProductDto dto)
+  public ResponseEntity<?> saveProduct(@RequestBody @Valid ProductDto dto);
   ```
 * Agregar método en `GlobalExceptionHandler` para capturar `MethodArgumentNotValidException` y devolver errores personalizados.
 
