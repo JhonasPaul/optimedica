@@ -1,23 +1,26 @@
 package com.optimedica.products.controller;
 
 import com.optimedica.products.dto.ProductDto;
-
 import com.optimedica.products.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
+import com.optimedica.common.exception.ErrorResponse;
 
 import java.util.List;
 
 
+// Agrupa todos los endpoints de este controlador bajo la etiqueta "Productos"
+@Tag(name = "Productos", description = "Operaciones relacionadas con productos")
 @RestController
 @RequestMapping("api")
 public class ProductController {
@@ -25,11 +28,14 @@ public class ProductController {
     private final ProductService productService;
 
 
-
     // ✅ Obtiene todos los productos
     @Operation(summary = "Obtener todos los productos") // ✅ Describe brevemente qué hace el endpoint
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Productos obtenidos exitosamente"),
+            @ApiResponse(responseCode = "200", description = "Productos obtenidos exitosamente",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)))),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("listar")
@@ -38,28 +44,19 @@ public class ProductController {
     }
 
 
-    // Indica que este método sirve para obtener productos paginados.
-// El parámetro `page` representa el número de página solicitado.
-    @Operation(
-            summary = "Listar productos paginados", // Título breve que aparecerá en Swagger
-            description = "Devuelve una lista paginada de productos, 5 por página." // Explicación más detallada
-    )
+    // 🔹 Anotación que describe qué hace este endpoint para Swagger UI
+    @Operation(summary = "Listar producto paginados") //  Breve resumen visible en la UI de Swagger
+
+// 🔹 Indica que si todo va bien, se devuelve un JSON con un producto
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200", // Código HTTP que se devuelve cuando todo sale bien
-                    description = "Lista de productos obtenida correctamente", // Descripción del éxito
-                    content = @Content(mediaType = "application/json") // Tipo de respuesta
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Número de página inválido (por ejemplo, negativo)", // Lo que podría causar un 400
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Error interno del servidor",
-                    content = @Content
-            )
+            @ApiResponse(responseCode = "200", // ✅ Código de respuesta HTTP esperada
+                    description = "Lista paginada de productos",
+                    content = @Content(mediaType = "application/json", //  Tipo de contenido de la respuesta
+                            array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)))), //  Esquema que representa el producto devuelto
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/page/{page}")
     public ResponseEntity<?> obtenerProductosPaginados(@PathVariable int page) {
@@ -69,15 +66,19 @@ public class ProductController {
     }
 
 
+    // 🔹 Anotación que describe qué hace este endpoint para Swagger UI
+    @Operation(summary = "Obtener producto por ID") //  Breve resumen visible en la UI de Swagger
 
-    // ✅ Obtiene un producto por su ID
-    @Operation(summary = "Obtener producto por ID")
+// 🔹 Indica que si todo va bien, se devuelve un JSON con un producto
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto encontrado",
-                    content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor"),
-
+            @ApiResponse(responseCode = "200", // ✅ Código de respuesta HTTP esperada
+                    description = "Producto encontrado correctamente",
+                    content = @Content(mediaType = "application/json", //  Tipo de contenido de la respuesta
+                            schema = @Schema(implementation = ProductDto.class))), //  Esquema que representa el producto devuelto
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> listarPorId(@PathVariable Integer id) {
@@ -86,12 +87,14 @@ public class ProductController {
     }
 
 
-    // ✅ Crea un nuevo producto
-    @Operation(summary = "Crear nuevo producto")
+    @Operation(summary = "Agregar producto")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Producto creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el producto"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Producto agregado exitosamente",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos para agregar el producto",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("guardar")
     public ResponseEntity<?> saveProduct(@RequestBody ProductDto productDto) {
@@ -100,13 +103,16 @@ public class ProductController {
     }
 
 
-    // ✅ Actualiza un producto existente
     @Operation(summary = "Actualizar producto existente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos para actualizar el producto"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class))),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos para actualizar el producto",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody ProductDto productDto) {
@@ -115,12 +121,13 @@ public class ProductController {
     }
 
 
-    // ✅ Elimina un producto por su ID
-    @Operation(summary = "Eliminar producto por ID")
+    @Operation(summary = "Elimina un producto por el id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Producto eliminado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            @ApiResponse(responseCode = "204", description = "Producto actualizado"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Integer id) {

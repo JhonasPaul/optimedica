@@ -1,5 +1,7 @@
 package com.optimedica.common.exception;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 
 /**
@@ -8,10 +10,15 @@ import java.time.LocalDateTime;
  */
 public class ErrorResponse {
 
-    private LocalDateTime timestamp;  // Fecha y hora del error
-    private int status;               // Código HTTP (por ejemplo, 404, 400)
-    private String error;             // Breve descripción del error (ej: "Recurso no encontrado")
-    private String message;           // Mensaje más detallado o personalizado
+    @Schema(description = "Fecha y hora del error", example = "2025-07-09T12:34:56")
+    private LocalDateTime timestamp;
+    @Schema(description = "Código HTTP de estado", example = "404")// Fecha y hora del error
+    private int status;
+    @Schema(description = "Tipo de error", example = "Not Found")// Código HTTP (por ejemplo, 404, 400)
+    private String error;
+    @Schema(description = "Mensaje detallado del error", example = "El producto con ID 10 no fue encontrado")// Breve descripción del error (ej: "Recurso no encontrado")
+    private String message;
+    @Schema(description = "Ruta que generó el error", example = "/api/10")// Mensaje más detallado o personalizado
     private String path;              // Ruta de la solicitud que causó el error (opcional pero útil)
 
     // Constructor completo
