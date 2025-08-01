@@ -5,7 +5,8 @@ services:
     image: optimedica-backend
     container_name: optimedica
     ports:
-      - "${SPRING_PORT}:8080"
+#               externo:interno
+      - "${SPRING_PORT}:${CONTAINER_PORT}"
     env_file:
       - .env
     networks:

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.optimedica.common.exception.ErrorResponse;
 
@@ -58,6 +59,7 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/page/{page}")
     public ResponseEntity<?> obtenerProductosPaginados(@PathVariable int page) {
         Pageable pageable = PageRequest.of(page, 5);

@@ -2,19 +2,12 @@ package com.optimedica.products.service;
 
 import com.optimedica.common.exception.ResourceNotFoundException;
 import com.optimedica.products.dto.ProductDto;
-import com.optimedica.products.entity.Product;
 import com.optimedica.products.mapper.ProductMapper;
 import com.optimedica.products.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
