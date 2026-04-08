@@ -28,24 +28,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
+        // ✅ Extraer el header Authorization
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String email;
 
+        // ✅ Verificamos si el header es nulo o no empieza con "Bearer "
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        // ✅ Extraemos el token JWT desde el header
         jwt = authHeader.substring(7);
-        email = jwtService.extractUsername(jwt);
+        email = jwtService.extractUsername(jwt); // extrae el email (subject) del token
 
+        // ✅ Verificamos que no haya ya un usuario autenticado en el contexto
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            if (jwtService.isTokenValid(jwt,  userDetails)) {
+            if (jwtService.isTokenValid(jwt, (com.optimedica.security.entity.User) userDetails)) {
                 // ✅ Creamos el objeto de autenticación manualmente
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -54,8 +60,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // ✅ Establecemos el usuario autenticado en el contexto de Spring Security
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-                log.info("🔐 Usuario seteado en contexto: {}", userDetails.getUsername());
             }
         }
+
+        // ✅ Continuamos con el resto de filtros
+        filterChain.doFilter(request, response);
     }
 }

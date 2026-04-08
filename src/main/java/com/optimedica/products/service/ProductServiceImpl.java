@@ -2,14 +2,19 @@ package com.optimedica.products.service;
 
 import com.optimedica.common.exception.ResourceNotFoundException;
 import com.optimedica.products.dto.ProductDto;
+import com.optimedica.products.entity.Product;
 import com.optimedica.products.mapper.ProductMapper;
 import com.optimedica.products.repository.ProductRepository;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -21,6 +26,12 @@ public class ProductServiceImpl implements ProductService {
         this.productMapper = productMapper;
     }
 
+    @PostConstruct
+    public void init() {
+        log.info("🛠 ProductServiceImpl cargado por Spring");
+    }
+
+
 
     @Override
     public List<ProductDto> listProduct() {
@@ -30,8 +41,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductDto> pageProduct(Pageable pageable) {
-        return productRepository.findAll(pageable)
-                .map(u -> productMapper.toDto(u));
+        Page<Product> productos = productRepository.findAll(pageable);
+        log.info("📦 Total productos encontrados: {}", productos.getTotalElements());
+        return productos.map(productMapper::toDto);
+//        throw new RuntimeException("🚨 Este servicio se está ejecutando");
     }
 
     @Override
@@ -56,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
         var existing = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("El Producto con el id : " + id + " no fue encontrado"));
 
-/*copia todo los valores actuales del dto que viene del cliente hacia la entidad Product*/
+        /*copia todo los valores actuales del dto que viene del cliente hacia la entidad Product*/
         productMapper.updateProductFromDto(productDto, existing); // evita los campos que no se actualizaran
         var updated = productRepository.save(existing);
         return productMapper.toDto(updated);

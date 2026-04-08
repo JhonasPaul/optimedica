@@ -48,6 +48,7 @@ public class ProductController {
     }
 
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     // 🔹 Anotación que describe qué hace este endpoint para Swagger UI
     @Operation(summary = "Listar producto paginados") //  Breve resumen visible en la UI de Swagger
 // 🔹 Indica que si todo va bien, se devuelve un JSON con un producto
@@ -64,20 +65,19 @@ public class ProductController {
     @GetMapping("/page/{page}")
     public ResponseEntity<?> obtenerProductosPaginados(@PathVariable int page) {
         Pageable pageable = PageRequest.of(page, 5);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        log.info("📥 En el controlador, autenticado como: {}", auth != null ? auth.getName() : "SIN AUTENTICAR");
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        log.info("📥 En el controlador, autenticado como: {}", auth != null ? auth.getName() : "SIN AUTENTICAR");
 
+//        log.info("🔍 Entrando al método pageProduct() con pageable: {}", page);
         return ResponseEntity.status(HttpStatus.OK).body(productService.pageProduct(pageable));
-
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     // 🔹 Anotación que describe qué hace este endpoint para Swagger UI
     @Operation(summary = "Obtener producto por ID") //  Breve resumen visible en la UI de Swagger
-
 // 🔹 Indica que si todo va bien, se devuelve un JSON con un producto
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", // ✅ Código de respuesta HTTP esperada
+            @ApiResponse(responseCode = "200", //  Código de respuesta HTTP esperada
                     description = "Producto encontrado correctamente",
                     content = @Content(mediaType = "application/json", //  Tipo de contenido de la respuesta
                             schema = @Schema(implementation = ProductDto.class))), //  Esquema que representa el producto devuelto

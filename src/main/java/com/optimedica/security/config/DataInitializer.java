@@ -26,7 +26,18 @@ public class DataInitializer {
                         .build();
 
                 userRepository.save(user);
-                System.out.println("Usuario admin creado.");
+                System.out.println("Usuario1 admin creado.");
+            }
+
+            if (userRepository.findByEmail("user@optimedica.com").isEmpty()) {
+                User user1 = User.builder()
+                        .email("user@optimedica.com")
+                        .password(passwordEncoder.encode("12345678")) // ✅ Contraseña encriptada
+                        .role(Role.USER)
+                        .build();
+
+                userRepository.save(user1);
+                System.out.println("Usuario1 admin creado.");
             }
         };
     }
